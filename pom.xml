@@ -28,7 +28,7 @@
 
     <groupId>org.glassfish</groupId>
     <artifactId>jakarta.el</artifactId>
-    <version>3.0.3.payara-p1</version>
+    <version>3.0.3.payara-p2-SNAPSHOT</version>
     
     <name>Jakarta Expression Language 3.0</name>
     <description>
