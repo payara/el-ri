@@ -222,13 +222,22 @@ class ELUtil {
      */
     static Object invokeMethod(ELContext context, Method method, Object base, Object[] params) {
 
-        Object[] parameters = buildParameters(context, method.getParameterTypes(), method.isVarArgs(), params);
         try {
+            int paramCount = params == null ? 0 : params.length;
+            if (paramCount == 0) {
+                for (Class ParameterType : method.getParameterTypes()) {
+                    if (ParameterType.getName().equals("javax.faces.event.AjaxBehaviorEvent")) {
+                        return method.invoke(base, (Object[]) params);
+                    }
+                }
+            }
+            Object[] parameters = buildParameters(
+                    context, method.getParameterTypes(), method.isVarArgs(), params);
             return method.invoke(base, parameters);
         } catch (IllegalAccessException iae) {
             throw new ELException(iae);
         } catch (IllegalArgumentException iae) {
-            throw new ELException(iae);
+            throw new IllegalArgumentException(iae);
         } catch (InvocationTargetException ite) {
             throw new ELException(ite.getCause());
         }

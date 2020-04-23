@@ -16,6 +16,7 @@
 
 package com.sun.el.util;
 
+import com.sun.el.lang.ELSupport;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -28,13 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.MethodNotFoundException;
 import javax.el.PropertyNotFoundException;
-
-import com.sun.el.lang.ELSupport;
 
 /**
  * Utilities for Managing Serialization and Reflection
@@ -146,15 +144,24 @@ public class ReflectionUtil {
     /*
      * This method duplicates code in javax.el.ELUtil. When making changes keep the code in sync.
      */
-    public static Object invokeMethod(ELContext context, Method m, Object base, Object[] params) {
+    public static Object invokeMethod(ELContext context, Method method, Object base, Object[] params) {
 
-        Object[] parameters = buildParameters(context, m.getParameterTypes(), m.isVarArgs(), params);
         try {
-            return m.invoke(base, parameters);
+            int paramCount = params == null ? 0 : params.length;
+            if (paramCount == 0) {
+                for (Class ParameterType : method.getParameterTypes()) {
+                    if (ParameterType.getName().equals("javax.faces.event.AjaxBehaviorEvent")) {
+                        return method.invoke(base, (Object[]) params);
+                    }
+                }
+            }
+            Object[] parameters = buildParameters(
+                    context, method.getParameterTypes(), method.isVarArgs(), params);
+            return method.invoke(base, parameters);
         } catch (IllegalAccessException iae) {
             throw new ELException(iae);
         } catch (IllegalArgumentException iae) {
-            throw new ELException(iae);
+            throw new IllegalArgumentException(iae);
         } catch (InvocationTargetException ite) {
             throw new ELException(ite.getCause());
         }
