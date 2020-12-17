@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles imports of class names and package names.  An imported package
@@ -176,6 +178,13 @@ public class ImportHandler {
                 return Class.forName(className, false, getClass().getClassLoader());
             } catch (ClassNotFoundException ex) {
                 notAClass.add(className);
+                Logger.getLogger(ImportHandler.class.getName()).log(Level.FINE, ex.getMessage(), ex);
+            }
+        } else {
+            Logger logger = Logger.getLogger(ImportHandler.class.getName());
+            if (logger.isLoggable(Level.FINER)) {
+                String msg = "Class '" + className + "' not found earlier, skipping loading this class";
+                logger.log(Level.FINER, msg, new ClassNotFoundException(msg));
             }
         }
         return null;
