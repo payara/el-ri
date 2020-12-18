@@ -222,6 +222,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
                 this.varMapper);
+        context.putContext(ValueExpression.class, this.expr);
         ctx.notifyBeforeEvaluation(this.expr);
         Object value = this.getNode().getValue(ctx);
         if (this.expectedType != null) {
