@@ -178,6 +178,7 @@ public final class ValueExpressionImpl extends ValueExpression implements Extern
     @Override
     public Object getValue(ELContext context) throws PropertyNotFoundException, ELException {
         EvaluationContext ctx = new EvaluationContext(context, fnMapper, varMapper);
+        context.putContext(ValueExpression.class, this.expr);
         ctx.notifyBeforeEvaluation(expr);
 
         Object value = getNode().getValue(ctx);
