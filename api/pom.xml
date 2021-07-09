@@ -31,7 +31,7 @@
     
     <groupId>jakarta.el</groupId>
     <artifactId>jakarta.el-api</artifactId>
-    <version>3.0.3.payara-p5</version>
+    <version>3.0.3.payara-p6-SNAPSHOT</version>
     
     <name>Jakarta Expression Language 3.0 API</name>
     <description>
