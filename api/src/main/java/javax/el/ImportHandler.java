@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles imports of class names and package names. An imported package name implicitly imports all the classes in the
@@ -33,6 +35,8 @@ import java.util.Map;
  * (package and class) name at evaluation time.
  */
 public class ImportHandler {
+
+    private static final Logger logger = Logger.getLogger(ImportHandler.class.getName());
 
     private Map<String, String> classNameMap = new HashMap<>();
     private Map<String, Class<?>> classMap = new HashMap<>();
@@ -155,6 +159,12 @@ public class ImportHandler {
                 return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
             } catch (ClassNotFoundException ex) {
                 notAClass.add(className);
+                logger.log(Level.FINE, ex.getMessage(), ex);
+            }
+        } else {
+            if (logger.isLoggable(Level.FINER)) {
+                String msg = "Class '" + className + "' not found earlier, skipping loading this class";
+                logger.log(Level.FINER, msg, new ClassNotFoundException(msg));
             }
         }
 
